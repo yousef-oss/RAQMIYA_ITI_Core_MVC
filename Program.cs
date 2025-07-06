@@ -13,6 +13,13 @@ builder.Services.AddDbContext<RaqmiyaContext>(options => options.UseSqlServer(bu
 
 builder.Services.AddScoped<IUserRepo, UserRepo>();
 
+builder.Services.AddDbContext<RaqmiyaContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddSession();
+builder.Services.AddScoped<ITI_Raqmiya_MVC.Repository.Repos_Implementation.IAuthRepository, AuthRepository>();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -23,6 +30,8 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseSession();
 
 app.UseAuthorization();
 
