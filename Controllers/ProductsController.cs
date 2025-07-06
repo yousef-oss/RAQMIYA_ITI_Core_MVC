@@ -22,8 +22,9 @@ namespace ITI_Raqmiya_MVC.Controllers
         // GET: Products
         public async Task<IActionResult> Index()
         {
-            var raqmiyaContext = _context.Products.Include(p => p.Creator);
-            return View(await raqmiyaContext.ToListAsync());
+            var products = _productRepo.GetAllPublished(); 
+            return View(products);
+           
         }
 
         // GET: Products/Details/5
