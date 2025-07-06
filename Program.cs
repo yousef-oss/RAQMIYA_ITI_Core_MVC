@@ -11,6 +11,8 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<RaqmiyaContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("connection")));
 
+builder.Services.AddScoped<IProductRepo, ProductRepo>();
+
 builder.Services.AddScoped<IUserRepo, UserRepo>();
 
 var app = builder.Build();
@@ -23,6 +25,8 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

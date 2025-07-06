@@ -14,75 +14,41 @@ namespace ITI_Raqmiya_MVC.Repository.Repos_Implementation
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        // Get all users without navigation properties (lightweight)
-        public async Task<List<User>> GetAllAsync()
+        public User GetById(int id) => _context.Users.Find(id);
+
+        public IEnumerable<User> GetAll() => _context.Users.ToList();
+
+        public void Add(User user) => _context.Users.Add(user);
+
+        public void Update(User user) => _context.Users.Update(user);
+
+        public void Delete(int id)
         {
-            return await _context.Users.ToListAsync();
+            var user = GetById(id);
+            if (user != null)
+                _context.Users.Remove(user);
         }
 
-        // Get all users including related navigation properties
-        public async Task<List<User>> GetAllWithDetailsAsync()
+        public void SaveChanges() => _context.SaveChanges();
+
+        public User GetByEmail(string email)
         {
-            return await _context.Users
-                .Include(u => u.Products)
-                .Include(u => u.Orders)
-                .Include(u => u.Reviews)
-                .Include(u => u.Subscriptions)
-                .Include(u => u.Posts)
-                .ToListAsync();
+            throw new NotImplementedException();
         }
 
-        // Get single user by ID
-        public async Task<User?> GetByIdAsync(int id)
+        public User GetByUsername(string username)
         {
-            return await _context.Users.FindAsync(id);
+            throw new NotImplementedException();
         }
 
-        // Get single user by ID with relations
-        public async Task<User?> GetByIdWithDetailsAsync(int id)
+        public bool EmailExists(string email)
         {
-            return await _context.Users
-                .Include(u => u.Products)
-                .Include(u => u.Orders)
-                .Include(u => u.Reviews)
-                .Include(u => u.Subscriptions)
-                .Include(u => u.Posts)
-                .FirstOrDefaultAsync(u => u.Id == id);
+            throw new NotImplementedException();
         }
 
-        // Add new user
-        public async Task AddAsync(User user)
+        public bool UsernameExists(string username)
         {
-            if (user == null)
-                throw new ArgumentNullException(nameof(user));
-
-            await _context.Users.AddAsync(user);
-        }
-
-        // Update user
-        public Task UpdateAsync(User user)
-        {
-            if (user == null)
-                throw new ArgumentNullException(nameof(user));
-
-            _context.Users.Update(user);
-            return Task.CompletedTask;
-        }
-
-        // Delete user
-        public Task DeleteAsync(User user)
-        {
-            if (user == null)
-                throw new ArgumentNullException(nameof(user));
-
-            _context.Users.Remove(user);
-            return Task.CompletedTask;
-        }
-
-        // Save changes to database
-        public async Task SaveAsync()
-        {
-            await _context.SaveChangesAsync();
+            throw new NotImplementedException();
         }
     }
 }

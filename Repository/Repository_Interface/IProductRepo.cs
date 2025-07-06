@@ -4,12 +4,14 @@ namespace ITI_Raqmiya_MVC.Repository.Repository_Interface
 {
     public interface IProductRepo
     {
-        public List<Product> GetAll();
-        public Product GetById(int id);
-        public void Delete(Product product);
-        public void Update(Product product);
-        public void Add(Product product);
-        public void Save();
+        Product GetById(int id);
+        IEnumerable<Product> GetAllPublished();
+        IEnumerable<Product> GetAllByCreatorId(int creatorId);
+        IEnumerable<Product> GetAll(); // Admin
+        void Add(Product product);
+        void Update(Product product);
+        void Delete(int id);
+        void SaveChanges();
 
 
     }
