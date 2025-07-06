@@ -1,0 +1,77 @@
+﻿@model IEnumerable<ITI_Raqmiya_MVC.Models.OfferCode>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Code)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DiscountType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DiscountValue)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UsageLimit)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TimesUsed)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StartsAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExpiresAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Product)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Code)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DiscountType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DiscountValue)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UsageLimit)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TimesUsed)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartsAt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExpiresAt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Product.Currency)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
