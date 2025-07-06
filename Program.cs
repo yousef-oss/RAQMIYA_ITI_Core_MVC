@@ -11,6 +11,8 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<RaqmiyaContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("connection")));
 
+builder.Services.AddScoped<IOrder, OrderRepo>();
+
 builder.Services.AddScoped<IProductRepo, ProductRepo>();
 
 builder.Services.AddScoped<IUserRepo, UserRepo>();

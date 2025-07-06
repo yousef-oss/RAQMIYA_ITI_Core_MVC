@@ -4,11 +4,13 @@ namespace ITI_Raqmiya_MVC.Repository.Repository_Interface
 {
     public interface IOrder
     {
-        public List<Order> GetAll();
-        public Order GetById(int id);
-        public void Delete(Order order);
-        public void Update(Order order);
-        public void Add(Order order);
-        public void Save();
+        Order GetById(int id);
+        IEnumerable<Order> GetAll(); // Admin
+        IEnumerable<Order> GetByBuyerId(int buyerId);
+        IEnumerable<Order> GetByEmail(string email); // Guest lookup
+        void Add(Order order);
+        void Update(Order order);
+        void Delete(int id);
+        void SaveChanges();
     }
 }
