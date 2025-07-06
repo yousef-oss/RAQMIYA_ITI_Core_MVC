@@ -62,10 +62,11 @@ namespace ITI_Raqmiya_MVC.Controllers
         //[ValidateAntiForgeryToken]
         public IActionResult Create(Product product)
         {
-            if (!ModelState.IsValid)
-                return View();
+            //if (!ModelState.IsValid)
+            //    return View();
 
-            product.CreatorId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            //product.CreatorId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            product.CreatorId = 1;
             product.PublishedAt = DateTime.UtcNow;
             product.Status = "draft";
             _productRepo.Add(product);
