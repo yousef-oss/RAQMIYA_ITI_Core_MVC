@@ -1,4 +1,6 @@
-﻿namespace ITI_Raqmiya_MVC.ViewModels
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ITI_Raqmiya_MVC.ViewModels
 {
     public class RegisterViewModel
     {
