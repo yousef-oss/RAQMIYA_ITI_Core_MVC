@@ -28,8 +28,10 @@ namespace ITI_Raqmiya_MVC.Controllers
         //[AllowAnonymous]
         public IActionResult Index()
         {
+
             var products = _productRepo.GetAllPublished();
             return View(products);
+
         }
 
         // GET: /Products/MyProducts
