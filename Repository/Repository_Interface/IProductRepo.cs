@@ -6,9 +6,9 @@ namespace ITI_Raqmiya_MVC.Repository.Repository_Interface
     {
         public List<Product> GetAll();
         public Product GetById(int id);
-        public void Delete(Product user);
-        public void Update(Product user);
-        public void Add(Product user);
+        public void Delete(Product product);
+        public void Update(Product product);
+        public void Add(Product product);
         public void Save();
 
 
