@@ -14,7 +14,7 @@
     <p><strong>Last Login:</strong> @Model.LastLogin</p>
 </div>
 
-@if (User.Identity.Name == Model.Id.ToString())
+@if (User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value == Model.Id.ToString())
 {
     <p>@Html.ActionLink("Edit My Profile", "Edit", new { id = Model.Id }, new { @class = "btn btn-primary" })</p>
 }
