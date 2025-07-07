@@ -1,170 +1,125 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using ITI_Raqmiya_MVC.Data;
+using ITI_Raqmiya_MVC.Models;
+using ITI_Raqmiya_MVC.Repository.Repository_Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ITI_Raqmiya_MVC.Data;
-using ITI_Raqmiya_MVC.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace ITI_Raqmiya_MVC.Controllers
 {
     public class OrdersController : Controller
     {
-        private readonly RaqmiyaContext _context;
+        private readonly IOrder _orderRepo;
+        private readonly IProductRepo _productRepo;
 
-        public OrdersController(RaqmiyaContext context)
+        public OrdersController(IOrder orderRepo, IProductRepo productRepo)
         {
-            _context = context;
+            _orderRepo = orderRepo;
+            _productRepo = productRepo;
         }
 
-        // GET: Orders
-        public async Task<IActionResult> Index()
+        // GET: /Orders/MyOrders (for logged-in buyers)
+        //[Authorize]
+        public IActionResult MyOrders()
         {
-            var raqmiyaContext = _context.Orders.Include(o => o.Buyer).Include(o => o.Product);
-            return View(await raqmiyaContext.ToListAsync());
+            //int buyerId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            int buyerId = 1;
+            var orders = _orderRepo.GetByBuyerId(buyerId);
+            return View(orders);
         }
 
-        // GET: Orders/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: /Orders/GuestLookup?email=guest@example.com
+        [AllowAnonymous]
+        public IActionResult GuestLookup(string email)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (string.IsNullOrWhiteSpace(email))
+                return View("EnterGuestEmail");
 
-            var order = await _context.Orders
-                .Include(o => o.Buyer)
-                .Include(o => o.Product)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (order == null)
-            {
-                return NotFound();
-            }
+            var orders = _orderRepo.GetByEmail(email);
+            return View("GuestOrders", orders);
+        }
+
+        // GET: /Orders/Details/5
+        public IActionResult Details(int id)
+        {
+            var order = _orderRepo.GetById(id);
+            if (order == null) return NotFound();
+
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            bool isAdmin = User.IsInRole("Admin");
+            bool isOwner = userIdClaim != null && int.TryParse(userIdClaim, out var uid) && order.BuyerId == uid;
+
+            if (!isAdmin && !isOwner && order.GuestEmail != User.Identity.Name)
+                return Unauthorized();
 
             return View(order);
         }
 
-        // GET: Orders/Create
-        public IActionResult Create()
+        // POST: /Orders/Checkout
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public IActionResult Checkout(Order order)
         {
-            ViewData["BuyerId"] = new SelectList(_context.Users, "Id", "Email");
-            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Currency");
-            return View();
+            if (!ModelState.IsValid)
+                return View(order);
+
+            order.OrderedAt = DateTime.UtcNow;
+            order.PaymentStatus = "completed"; // Simulate success
+            _orderRepo.Add(order);
+            _orderRepo.SaveChanges();
+
+            // TODO: create license/access record here
+
+            return RedirectToAction("Confirmation", new { id = order.Id });
         }
 
-        // POST: Orders/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // GET: /Orders/Confirmation/5
+        public IActionResult Confirmation(int id)
+        {
+            var order = _orderRepo.GetById(id);
+            if (order == null) return NotFound();
+            return View(order);
+        }
+
+        // POST: /Orders/Cancel/5
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,BuyerId,ProductId,PricePaid,Currency,TransactionId,PaymentStatus,OrderedAt,GuestEmail")] Order order)
+        public IActionResult Cancel(int id)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(order);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["BuyerId"] = new SelectList(_context.Users, "Id", "Email", order.BuyerId);
-            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Currency", order.ProductId);
-            return View(order);
+            var order = _orderRepo.GetById(id);
+            if (order == null || order.PaymentStatus == "refunded")
+                return NotFound();
+
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            bool isAdmin = User.IsInRole("Admin");
+            bool isOwner = userIdClaim != null && int.TryParse(userIdClaim, out var uid) && order.BuyerId == uid;
+
+            if (!isAdmin && !isOwner)
+                return Unauthorized();
+
+            order.PaymentStatus = "refunded";
+            _orderRepo.Update(order);
+            _orderRepo.SaveChanges();
+
+            // TODO: Revoke license/access
+
+            return RedirectToAction(nameof(Details), new { id });
         }
 
-        // GET: Orders/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // GET: /Orders/Admin
+        [Authorize(Roles = "Admin")]
+        public IActionResult Admin()
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var order = await _context.Orders.FindAsync(id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-            ViewData["BuyerId"] = new SelectList(_context.Users, "Id", "Email", order.BuyerId);
-            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Currency", order.ProductId);
-            return View(order);
-        }
-
-        // POST: Orders/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,BuyerId,ProductId,PricePaid,Currency,TransactionId,PaymentStatus,OrderedAt,GuestEmail")] Order order)
-        {
-            if (id != order.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(order);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!OrderExists(order.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["BuyerId"] = new SelectList(_context.Users, "Id", "Email", order.BuyerId);
-            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Currency", order.ProductId);
-            return View(order);
-        }
-
-        // GET: Orders/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var order = await _context.Orders
-                .Include(o => o.Buyer)
-                .Include(o => o.Product)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-
-            return View(order);
-        }
-
-        // POST: Orders/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var order = await _context.Orders.FindAsync(id);
-            if (order != null)
-            {
-                _context.Orders.Remove(order);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool OrderExists(int id)
-        {
-            return _context.Orders.Any(e => e.Id == id);
+            var allOrders = _orderRepo.GetAll();
+            return View(allOrders);
         }
     }
 }

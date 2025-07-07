@@ -1,89 +1,36 @@
 ﻿@model IEnumerable<ITI_Raqmiya_MVC.Models.User>
-
 @{
-    ViewData["Title"] = "Index";
+    ViewBag.Title = "User Management";
 }
 
-<h1>Index</h1>
+<h2>User Management (Admin Only)</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PasswordHash)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Username)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedAt)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LastLogin)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsCreator)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ProfileDescription)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ProfileImageUrl)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StripeConnectAccountId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PayoutSettings)
-            </th>
-            <th></th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Is Creator</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PasswordHash)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Username)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedAt)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastLogin)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsCreator)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProfileDescription)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProfileImageUrl)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StripeConnectAccountId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PayoutSettings)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Username</td>
+                <td>@user.Email</td>
+                <td>@user.IsCreator</td>
+                <td>
+                    @Html.ActionLink("Details", "Details", new { id = user.Id }) |
+                    @Html.ActionLink("Edit", "Edit", new { id = user.Id })
+                    @if (User.IsInRole("Admin"))
+                    {
+                        @: |
+                        @Html.ActionLink("Delete", "Delete", new { id = user.Id })
+                    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

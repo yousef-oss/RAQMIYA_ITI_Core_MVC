@@ -7,159 +7,139 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ITI_Raqmiya_MVC.Data;
 using ITI_Raqmiya_MVC.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using ITI_Raqmiya_MVC.Repository.Repository_Interface;
 
 namespace ITI_Raqmiya_MVC.Controllers
 {
+
+    //[Authorize]
     public class ProductsController : Controller
     {
-        private readonly RaqmiyaContext _context;
+        private readonly IProductRepo _productRepo;
 
-        public ProductsController(RaqmiyaContext context)
+        public ProductsController(IProductRepo productRepo)
         {
-            _context = context;
+            _productRepo = productRepo;
         }
 
-        // GET: Products
-        public async Task<IActionResult> Index()
+        // GET: /Products
+        //[AllowAnonymous]
+        public IActionResult Index()
         {
-            var products = _productRepo.GetAllPublished(); 
+
+            var products = _productRepo.GetAllPublished();
             return View(products);
-           
+
         }
 
-        // GET: Products/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: /Products/MyProducts
+        public IActionResult MyProducts()
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            int creatorId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var myProducts = _productRepo.GetAllByCreatorId(creatorId);
+            return View(myProducts);
+        }
 
-            var product = await _context.Products
-                .Include(p => p.Creator)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (product == null)
-            {
+        // GET: /Products/Details/5
+        //[AllowAnonymous]
+        public IActionResult Details(int id)
+        {
+            var product = _productRepo.GetById(id);
+            if (product == null || (!product.IsPublic && !User.IsInRole("Admin") && product.CreatorId.ToString() != User.FindFirst(ClaimTypes.NameIdentifier)?.Value))
                 return NotFound();
-            }
 
             return View(product);
         }
 
-        // GET: Products/Create
+        // GET: /Products/Create
         public IActionResult Create()
         {
-            ViewData["CreatorId"] = new SelectList(_context.Users, "Id", "Email");
             return View();
         }
 
-        // POST: Products/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: /Products/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CreatorId,Name,Description,Price,Currency,ProductType,CoverImageUrl,PreviewVideoUrl,PublishedAt,Status,IsPublic,Permalink")] Product product)
+        //[ValidateAntiForgeryToken]
+        public IActionResult Create(Product product)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(product);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["CreatorId"] = new SelectList(_context.Users, "Id", "Email", product.CreatorId);
+            //if (!ModelState.IsValid)
+            //    return View();
+
+            //product.CreatorId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            product.CreatorId = 1;
+            product.PublishedAt = DateTime.UtcNow;
+            product.Status = "draft";
+            _productRepo.Add(product);
+            _productRepo.SaveChanges();
+
+            return RedirectToAction(nameof(MyProducts));
+        }
+
+        // GET: /Products/Edit/5
+        public IActionResult Edit(int id)
+        {
+            var product = _productRepo.GetById(id);
+            if (product == null || product.CreatorId.ToString() != User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
+                return Unauthorized();
+
             return View(product);
         }
 
-        // GET: Products/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-            ViewData["CreatorId"] = new SelectList(_context.Users, "Id", "Email", product.CreatorId);
-            return View(product);
-        }
-
-        // POST: Products/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: /Products/Edit/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CreatorId,Name,Description,Price,Currency,ProductType,CoverImageUrl,PreviewVideoUrl,PublishedAt,Status,IsPublic,Permalink")] Product product)
+        //[ValidateAntiForgeryToken]
+        public IActionResult Edit(Product product)
         {
-            if (id != product.Id)
-            {
-                return NotFound();
-            }
+            if (!ModelState.IsValid)
+                return View(product);
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(product);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProductExists(product.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["CreatorId"] = new SelectList(_context.Users, "Id", "Email", product.CreatorId);
-            return View(product);
+            var original = _productRepo.GetById(product.Id);
+            if (original == null || original.CreatorId.ToString() != User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
+                return Unauthorized();
+
+            // Only update editable fields
+            original.Name = product.Name;
+            original.Description = product.Description;
+            original.Price = product.Price;
+            original.Currency = product.Currency;
+            original.ProductType = product.ProductType;
+            original.CoverImageUrl = product.CoverImageUrl;
+            original.PreviewVideoUrl = product.PreviewVideoUrl;
+            original.IsPublic = product.IsPublic;
+            original.Status = product.Status;
+            original.Permalink = product.Permalink;
+
+            _productRepo.Update(original);
+            _productRepo.SaveChanges();
+
+            return RedirectToAction(nameof(MyProducts));
         }
 
-        // GET: Products/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // GET: /Products/Delete/5
+        public IActionResult Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var product = await _context.Products
-                .Include(p => p.Creator)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (product == null)
-            {
-                return NotFound();
-            }
+            var product = _productRepo.GetById(id);
+            if (product == null || product.CreatorId.ToString() != User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
+                return Unauthorized();
 
             return View(product);
         }
 
-        // POST: Products/Delete/5
+        // POST: /Products/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        //[ValidateAntiForgeryToken]
+        public IActionResult DeleteConfirmed(int id)
         {
-            var product = await _context.Products.FindAsync(id);
-            if (product != null)
-            {
-                _context.Products.Remove(product);
-            }
+            var product = _productRepo.GetById(id);
+            if (product == null || product.CreatorId.ToString() != User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
+                return Unauthorized();
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool ProductExists(int id)
-        {
-            return _context.Products.Any(e => e.Id == id);
+            _productRepo.Delete(id);
+            _productRepo.SaveChanges();
+            return RedirectToAction(nameof(MyProducts));
         }
     }
+
 }

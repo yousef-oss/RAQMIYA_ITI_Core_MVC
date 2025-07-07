@@ -2,6 +2,7 @@
 using ITI_Raqmiya_MVC.Models;
 using ITI_Raqmiya_MVC.Repository.Repos_Implementation;
 using ITI_Raqmiya_MVC.Repository.Repository_Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,67 +12,49 @@ using System.Threading.Tasks;
 
 namespace ITI_Raqmiya_MVC.Controllers
 {
+    [Authorize]
     public class UsersController : Controller
     {
+        private readonly IUserRepo _userRepo;
 
-        
-
-        private readonly IUserRepo userRepo;
-
-        public UsersController(IUserRepo _userRepo)
+        public UsersController(IUserRepo userRepo)
         {
-            userRepo = _userRepo;
+            _userRepo = userRepo;
         }
 
-        // GET: Users
-        public async Task<IActionResult> Index()
+        // GET: Users (Admin only)
+        [Authorize(Roles = "Admin")]
+        public ActionResult Index()
         {
-            var users = await userRepo.GetAllAsync();
+            var users = _userRepo.GetAll();
             return View(users);
         }
 
-        // GET: Users/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: Users/Details/5 (Owner or Admin)
+        public IActionResult Details(int id)
         {
-            if (id == null)
-                return NotFound();
-
-            var user = await userRepo.GetByIdAsync(id.Value);
+            var user = _userRepo.GetById(id);
             if (user == null)
-                return NotFound();
+                return NotFound();  // Core version of 404
+
+            var currentUserId = int.Parse(User.Identity.Name); // Or retrieve from claims
+            if (!User.IsInRole("Admin") && user.Id != currentUserId)
+                return Unauthorized(); // Core version of 401
 
             return View(user);
         }
 
-        // GET: Users/Create
-        public IActionResult Create()
+        // GET: Users/Edit/5 (Owner only)
+        public ActionResult Edit(int id)
         {
-            return View();
-        }
-
-        // POST: Users/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Email,PasswordHash,Username,CreatedAt,LastLogin,IsCreator,ProfileDescription,ProfileImageUrl,StripeConnectAccountId,PayoutSettings")] User user)
-        {
-            if (ModelState.IsValid)
-            {
-                await userRepo.AddAsync(user);
-                await userRepo.SaveAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(user);
-        }
-
-        // GET: Users/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-                return NotFound();
-
-            var user = await userRepo.GetByIdAsync(id.Value);
+            var user = _userRepo.GetById(id);
             if (user == null)
                 return NotFound();
+
+            var currentUserId = int.Parse(User.Identity.Name);
+            if (user.Id != currentUserId)
+                return Unauthorized(); 
+
 
             return View(user);
         }
@@ -79,59 +62,39 @@ namespace ITI_Raqmiya_MVC.Controllers
         // POST: Users/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Email,PasswordHash,Username,CreatedAt,LastLogin,IsCreator,ProfileDescription,ProfileImageUrl,StripeConnectAccountId,PayoutSettings")] User user)
+        public ActionResult Edit(User user)
         {
-            if (id != user.Id)
-                return NotFound();
+            var currentUserId = int.Parse(User.Identity.Name);
+            if (user.Id != currentUserId)
+                return Unauthorized();
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    await userRepo.UpdateAsync(user);
-                    await userRepo.SaveAsync();
-                }
-                catch
-                {
-                    var exists = await userRepo.GetByIdAsync(user.Id);
-                    if (exists == null)
-                        return NotFound();
-                    else
-                        throw;
-                }
 
-                return RedirectToAction(nameof(Index));
-            }
+            if (!ModelState.IsValid)
+                return View(user);
 
-            return View(user);
+            _userRepo.Update(user);
+            return RedirectToAction("Details", new { id = user.Id });
         }
 
-        // GET: Users/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // GET: Users/Delete/5 (Admin only)
+        [Authorize(Roles = "Admin")]
+        public ActionResult Delete(int id)
         {
-            if (id == null)
-                return NotFound();
-
-            var user = await userRepo.GetByIdAsync(id.Value);
+            var user = _userRepo.GetById(id);
             if (user == null)
                 return NotFound();
 
             return View(user);
         }
 
-        // POST: Users/Delete/5
+        // POST: Users/Delete/5 (Admin only)
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(int id)
         {
-            var user = await userRepo.GetByIdAsync(id);
-            if (user != null)
-            {
-                await userRepo.DeleteAsync(user);
-                await userRepo.SaveAsync();
-            }
-
-            return RedirectToAction(nameof(Index));
+            _userRepo.Delete(id);
+            return RedirectToAction("Index");
         }
     }
 }

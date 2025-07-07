@@ -11,6 +11,10 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<RaqmiyaContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("connection")));
 
+builder.Services.AddScoped<IOrder, OrderRepo>();
+
+builder.Services.AddScoped<IProductRepo, ProductRepo>();
+
 builder.Services.AddScoped<IUserRepo, UserRepo>();
 
 builder.Services.AddDbContext<RaqmiyaContext>(options =>
@@ -31,6 +35,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseSession();
 
 app.UseAuthorization();
