@@ -16,9 +16,9 @@ namespace ITI_Raqmiya_MVC.Controllers
     public class OrdersController : Controller
     {
         private readonly IOrder _orderRepo;
-        private readonly IProductRepo _productRepo;
+        private readonly IProductRepository _productRepo;
 
-        public OrdersController(IOrder orderRepo, IProductRepo productRepo)
+        public OrdersController(IOrder orderRepo, IProductRepository productRepo)
         {
             _orderRepo = orderRepo;
             _productRepo = productRepo;

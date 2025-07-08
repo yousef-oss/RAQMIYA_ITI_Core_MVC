@@ -14,11 +14,17 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<RaqmiyaContext>(options => 
 options.UseSqlServer(builder.Configuration.GetConnectionString("connection")));
 
-builder.Services.AddScoped<IOrder, OrderRepo>();
+// Repo Registeration
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>(); // NEW
+builder.Services.AddScoped<ITagRepository, TagRepository>(); // NEW
 
-builder.Services.AddScoped<IProductRepo, ProductRepo>();
 
-builder.Services.AddScoped<IUserRepo, UserRepo>();
+//builder.Services.AddScoped<IOrder, OrderRepo>();
+
+//builder.Services.AddScoped<IProductRepository, ProductRepository>();
+
+//builder.Services.AddScoped<IUserRepo, UserRepo>();
 
 // DIC injection for AuthRepository
 
