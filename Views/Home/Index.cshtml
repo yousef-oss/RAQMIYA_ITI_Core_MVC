@@ -1,119 +1,243 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Sell what you love. Get paid instantly.";
 }
 
-@model IEnumerable<ITI_Raqmiya_MVC.Models.Product>
-
-<!-- Main layout container -->
-<div class="container py-5" style="font-family: 'Segoe UI', sans-serif;">
-    <!-- Hero Section -->
-    <section class="text-center mb-5">
-        <h1 class="display-3 fw-bold text-primary">Welcome to Raqmiya</h1>
-        <p class="lead text-secondary">Your destination for digital innovation — explore tools, assets, and software made for creators.</p>
-        <a href="#featured" class="btn btn-lg btn-outline-primary mt-3">Explore Products</a>
-    </section>
-
-    <!-- Features Overview Section -->
-    <section class="row text-center mb-5">
-        <div class="col-md-4">
-            <div class="p-4 border rounded shadow-sm bg-light">
-                <i class="bi bi-lightning-charge fs-1 text-warning"></i>
-                <h5 class="mt-3">Fast Delivery</h5>
-                <p class="text-muted">Access your purchases instantly after checkout.</p>
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-10">
+                <h1 class="hero-title mb-4">
+                    Sell what you love.
+                    <br />
+                    <span class="text-primary">Get paid instantly.</span>
+                </h1>
+                <p class="hero-subtitle mb-5">
+                    Raqmyia is the easiest way to sell your digital work online. Whether you're a creator, artist, or entrepreneur, we help you turn your passion into profit.
+                </p>
+                <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center align-items-center">
+                    <a href="#start-selling" class="btn btn-primary btn-lg px-4 py-3 d-flex align-items-center">
+                        Start selling for free
+                        <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                    <a href="#how-it-works" class="btn btn-outline-secondary btn-lg px-4 py-3 d-flex align-items-center">
+                        <i class="fas fa-play me-2"></i>
+                        Watch how it works
+                    </a>
+                </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="p-4 border rounded shadow-sm bg-light">
-                <i class="bi bi-lock fs-1 text-success"></i>
-                <h5 class="mt-3">Secure Checkout</h5>
-                <p class="text-muted">We use secure payment gateways to protect your data.</p>
+
+        <!-- Stats -->
+        <div class="row mt-5 pt-5">
+            <div class="col-md-4 text-center mb-4">
+                <div class="stat-number">$1B+</div>
+                <div class="stat-label">paid to creators</div>
+            </div>
+            <div class="col-md-4 text-center mb-4">
+                <div class="stat-number">8M+</div>
+                <div class="stat-label">active customers</div>
+            </div>
+            <div class="col-md-4 text-center mb-4">
+                <div class="stat-number">500K+</div>
+                <div class="stat-label">creators worldwide</div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="p-4 border rounded shadow-sm bg-light">
-                <i class="bi bi-people fs-1 text-info"></i>
-                <h5 class="mt-3">Made by Creators</h5>
-                <p class="text-muted">Our marketplace is full of hand-picked digital products.</p>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section py-5" id="features">
+    <div class="container">
+        <div class="row justify-content-center text-center mb-5">
+            <div class="col-lg-8">
+                <h2 class="section-title mb-4">Everything you need to sell online</h2>
+                <p class="section-subtitle">
+                    From digital products to physical goods, we've got all the tools you need to build a successful online business.
+                </p>
             </div>
         </div>
-    </section>
 
-    <!-- Search bar -->
-    <section class="d-flex justify-content-center mb-5">
-        <form class="d-flex w-50" asp-controller="Home" asp-action="Index" method="get">
-            <input name="searchTerm" class="form-control me-2" type="search" placeholder="Search for products..." aria-label="Search" value="@ViewBag.SearchTerm">
-            <button class="btn btn-dark" type="submit">Search</button>
-        </form>
-    </section>
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 class="feature-title">Instant Setup</h3>
+                    <p class="feature-description">
+                        Start selling in minutes. No complicated setup or monthly fees to get started.
+                    </p>
+                </div>
+            </div>
 
-    <!-- Product Grid -->
-    <section id="featured" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4 mb-5">
-        @if (Model != null && Model.Any())
-        {
-            foreach (var product in Model)
-            {
-                <div class="col">
-                    <div class="card h-100 border-0 shadow-sm rounded-4">
-                        <img src="@product.CoverImageUrl" class="card-img-top rounded-top" alt="@product.Name" style="height: 200px; object-fit: cover;" />
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title fw-semibold text-dark">@product.Name</h5>
-                            <p class="card-text text-muted">@product.Description</p>
-                            <div class="mt-auto d-flex justify-content-between align-items-center">
-                                <span class="fw-bold text-success">$@product.Price</span>
-                                <a asp-controller="Products" asp-action="Details" asp-route-id="@product.Id" class="btn btn-outline-primary btn-sm">View</a>
-                            </div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Secure Payments</h3>
+                    <p class="feature-description">
+                        We handle all payment processing securely with industry-standard encryption.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3 class="feature-title">Global Reach</h3>
+                    <p class="feature-description">
+                        Sell to customers worldwide with support for multiple currencies and languages.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <h3 class="feature-title">Flexible Pricing</h3>
+                    <p class="feature-description">
+                        Set your own prices, run sales, and offer discounts to boost your revenue.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h3 class="feature-title">Analytics</h3>
+                    <p class="feature-description">
+                        Track your sales, understand your customers, and optimize your business.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="feature-title">Community</h3>
+                    <p class="feature-description">
+                        Join thousands of creators sharing tips, strategies, and success stories.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials-section py-5">
+    <div class="container">
+        <div class="row justify-content-center text-center mb-5">
+            <div class="col-lg-8">
+                <h2 class="section-title mb-4">Loved by creators worldwide</h2>
+                <p class="section-subtitle">
+                    Join thousands of creators who have built successful businesses with Gumroad
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="testimonial-card">
+                    <div class="testimonial-rating mb-3">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-content">
+                        "The platform is incredibly user-friendly. I launched my first course in under an hour and have been earning passive income ever since."
+                    </p>
+                    <div class="testimonial-author">
+                        <img src="https://images.pexels.com/photos/2379005/pexels-photo-2379005.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2" alt="Yousef El-Moshatat" class="author-avatar">
+                        <div>
+                            <div class="author-name">Yousef El-Moshatat</div>
+                            <div class="author-role">Course Creator</div>
                         </div>
                     </div>
                 </div>
-            }
-        }
-        else
-        {
-            <div class="col-12 text-center">
-                <p class="text-muted">No products found.</p>
             </div>
-        }
-    </section>
 
-    <!-- Call to Action Section -->
-    <section class="text-center bg-primary text-white p-5 rounded mb-5">
-        <h2 class="mb-3">Join thousands of happy creators 🚀</h2>
-        <p class="mb-4">Start selling your digital products with Raqmiya or find your next tool to power your business.</p>
-        <a href="/register" class="btn btn-light btn-lg">Get Started</a>
-    </section>
-</div>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="testimonial-card">
+                    <div class="testimonial-rating mb-3">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-content">
+                        "Raqmyia has completely transformed my art business. I went from struggling to sell prints to making a full-time income from my digital art."
+                    </p>
+                    <div class="testimonial-author">
+                        <img src="https://images.pexels.com/photos/3756679/pexels-photo-3756679.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2" alt="Shei5 Willian" class="author-avatar">
+                        <div>
+                            <div class="author-name">Shei5 Willian</div>
+                            <div class="author-role">Digital Artist</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-<!-- Footer -->
-<footer class="bg-dark text-white py-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4 mb-4">
-                <h5 class="fw-bold">About Raqmiya</h5>
-                <p class="text-muted">Raqmiya is a modern digital marketplace designed for creators, developers, and businesses. We empower digital commerce through quality, security, and community.</p>
-            </div>
-            <div class="col-md-2 mb-4">
-                <h6 class="fw-semibold">Links</h6>
-                <ul class="list-unstyled">
-                    <li><a href="/" class="text-white-50 text-decoration-none">Home</a></li>
-                    <li><a href="/Products" class="text-white-50 text-decoration-none">Products</a></li>
-                    <li><a href="/Contact" class="text-white-50 text-decoration-none">Contact</a></li>
-                    <li><a href="/Privacy" class="text-white-50 text-decoration-none">Privacy</a></li>
-                </ul>
-            </div>
-            <div class="col-md-3 mb-4">
-                <h6 class="fw-semibold">Contact</h6>
-                <p class="text-white-50">support@raqmiya.com</p>
-                <p class="text-white-50">+20 123 456 7890</p>
-            </div>
-            <div class="col-md-3">
-                <h6 class="fw-semibold">Subscribe</h6>
-                <form class="d-flex">
-                    <input type="email" class="form-control me-2" placeholder="Email" aria-label="Email">
-                    <button class="btn btn-outline-light" type="submit">Go</button>
-                </form>
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="testimonial-card">
+                    <div class="testimonial-rating mb-3">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-content">
+                        "What I love most is how simple everything is. From uploading products to tracking sales, Gumroad makes it effortless."
+                    </p>
+                    <div class="testimonial-author">
+                        <img src="https://images.pexels.com/photos/3765035/pexels-photo-3765035.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2" alt="Mohamed Noble" class="author-avatar">
+                        <div>
+                            <div class="author-name">Mohamed Noble</div>
+                            <div class="author-role">Photographer</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <hr class="border-secondary" />
-        <div class="text-center text-white-50">&copy; @DateTime.Now.Year Raqmiya. All rights reserved.</div>
     </div>
-</footer>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container text-center">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h2 class="cta-title mb-4">Ready to start your creator journey?</h2>
+                <p class="cta-subtitle mb-5">
+                    Join over 500,000 creators who trust Raqmyia to sell their work online. Start for free, no credit card required.
+                </p>
+                <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center align-items-center">
+                    <a href="#start-selling" class="btn btn-light btn-lg px-4 py-3 d-flex align-items-center">
+                        Start selling for free
+                        <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                    <a href="#learn-more" class="btn btn-outline-light btn-lg px-4 py-3">
+                        Learn more
+                    </a>
+                </div>
+                <p class="cta-note mt-4">
+                    No setup fees • No monthly fees • Get paid instantly
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
