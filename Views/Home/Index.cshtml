@@ -1,47 +1,119 @@
 ﻿@{
- ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home Page";
 }
-   
 
+@model IEnumerable<ITI_Raqmiya_MVC.Models.Product>
 
-@model IEnumerable<ITI_Raqmiya_MVC.Models.Product> 
+<!-- Main layout container -->
+<div class="container py-5" style="font-family: 'Segoe UI', sans-serif;">
+    <!-- Hero Section -->
+    <section class="text-center mb-5">
+        <h1 class="display-3 fw-bold text-primary">Welcome to Raqmiya</h1>
+        <p class="lead text-secondary">Your destination for digital innovation — explore tools, assets, and software made for creators.</p>
+        <a href="#featured" class="btn btn-lg btn-outline-primary mt-3">Explore Products</a>
+    </section>
 
-<div class="text-center my-5">
-    <h1 class="display-4">Welcome To Raqmiya</h1>
-    <p class="lead">Find and explore the latest products below.</p>
+    <!-- Features Overview Section -->
+    <section class="row text-center mb-5">
+        <div class="col-md-4">
+            <div class="p-4 border rounded shadow-sm bg-light">
+                <i class="bi bi-lightning-charge fs-1 text-warning"></i>
+                <h5 class="mt-3">Fast Delivery</h5>
+                <p class="text-muted">Access your purchases instantly after checkout.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-4 border rounded shadow-sm bg-light">
+                <i class="bi bi-lock fs-1 text-success"></i>
+                <h5 class="mt-3">Secure Checkout</h5>
+                <p class="text-muted">We use secure payment gateways to protect your data.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-4 border rounded shadow-sm bg-light">
+                <i class="bi bi-people fs-1 text-info"></i>
+                <h5 class="mt-3">Made by Creators</h5>
+                <p class="text-muted">Our marketplace is full of hand-picked digital products.</p>
+            </div>
+        </div>
+    </section>
 
     <!-- Search bar -->
-    <div class="d-flex justify-content-center my-4">
+    <section class="d-flex justify-content-center mb-5">
         <form class="d-flex w-50" asp-controller="Home" asp-action="Index" method="get">
             <input name="searchTerm" class="form-control me-2" type="search" placeholder="Search for products..." aria-label="Search" value="@ViewBag.SearchTerm">
-            <button class="btn btn-primary" type="submit">Search</button>
+            <button class="btn btn-dark" type="submit">Search</button>
         </form>
-    </div>
-</div>
+    </section>
 
-<!-- Products list -->
-<div class="row row-cols-1 row-cols-md-3 g-4">
-    @if (Model != null && Model.Any())
-    {
-        foreach (var product in Model)
+    <!-- Product Grid -->
+    <section id="featured" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4 mb-5">
+        @if (Model != null && Model.Any())
         {
-            <div class="col">
-                <div class="card h-100 shadow-sm">
-                    <img src="@product.CoverImageUrl" class="card-img-top" alt="@product.Name" style="height: 200px; object-fit: cover;" />
-                    <div class="card-body">
-                        <h5 class="card-title">@product.Name</h5>
-                        <p class="card-text text-truncate">@product.Description</p>
-                        <p class="card-text fw-bold text-primary">$@product.Price</p>
-                        <a asp-controller="Products" asp-action="Details" asp-route-id="@product.Id" class="btn btn-outline-primary btn-sm">View Details</a>
+            foreach (var product in Model)
+            {
+                <div class="col">
+                    <div class="card h-100 border-0 shadow-sm rounded-4">
+                        <img src="@product.CoverImageUrl" class="card-img-top rounded-top" alt="@product.Name" style="height: 200px; object-fit: cover;" />
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title fw-semibold text-dark">@product.Name</h5>
+                            <p class="card-text text-muted">@product.Description</p>
+                            <div class="mt-auto d-flex justify-content-between align-items-center">
+                                <span class="fw-bold text-success">$@product.Price</span>
+                                <a asp-controller="Products" asp-action="Details" asp-route-id="@product.Id" class="btn btn-outline-primary btn-sm">View</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center">
+                <p class="text-muted">No products found.</p>
             </div>
         }
-    }
-    else
-    {
-        <div class="col-12 text-center">
-            <p class="text-muted">No products found.</p>
-        </div>
-    }
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="text-center bg-primary text-white p-5 rounded mb-5">
+        <h2 class="mb-3">Join thousands of happy creators 🚀</h2>
+        <p class="mb-4">Start selling your digital products with Raqmiya or find your next tool to power your business.</p>
+        <a href="/register" class="btn btn-light btn-lg">Get Started</a>
+    </section>
 </div>
+
+<!-- Footer -->
+<footer class="bg-dark text-white py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <h5 class="fw-bold">About Raqmiya</h5>
+                <p class="text-muted">Raqmiya is a modern digital marketplace designed for creators, developers, and businesses. We empower digital commerce through quality, security, and community.</p>
+            </div>
+            <div class="col-md-2 mb-4">
+                <h6 class="fw-semibold">Links</h6>
+                <ul class="list-unstyled">
+                    <li><a href="/" class="text-white-50 text-decoration-none">Home</a></li>
+                    <li><a href="/Products" class="text-white-50 text-decoration-none">Products</a></li>
+                    <li><a href="/Contact" class="text-white-50 text-decoration-none">Contact</a></li>
+                    <li><a href="/Privacy" class="text-white-50 text-decoration-none">Privacy</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3 mb-4">
+                <h6 class="fw-semibold">Contact</h6>
+                <p class="text-white-50">support@raqmiya.com</p>
+                <p class="text-white-50">+20 123 456 7890</p>
+            </div>
+            <div class="col-md-3">
+                <h6 class="fw-semibold">Subscribe</h6>
+                <form class="d-flex">
+                    <input type="email" class="form-control me-2" placeholder="Email" aria-label="Email">
+                    <button class="btn btn-outline-light" type="submit">Go</button>
+                </form>
+            </div>
+        </div>
+        <hr class="border-secondary" />
+        <div class="text-center text-white-50">&copy; @DateTime.Now.Year Raqmiya. All rights reserved.</div>
+    </div>
+</footer>

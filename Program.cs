@@ -1,6 +1,8 @@
 using ITI_Raqmiya_MVC.Data;
 using ITI_Raqmiya_MVC.Repository.Repos_Implementation;
 using ITI_Raqmiya_MVC.Repository.Repository_Interface;
+using Microsoft.AspNetCore.Authentication.Cookies;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -9,7 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDbContext<RaqmiyaContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("connection")));
+builder.Services.AddDbContext<RaqmiyaContext>(options => 
+options.UseSqlServer(builder.Configuration.GetConnectionString("connection")));
 
 builder.Services.AddScoped<IOrder, OrderRepo>();
 
@@ -17,11 +20,19 @@ builder.Services.AddScoped<IProductRepo, ProductRepo>();
 
 builder.Services.AddScoped<IUserRepo, UserRepo>();
 
-builder.Services.AddDbContext<RaqmiyaContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+// DIC injection for AuthRepository
 
 builder.Services.AddSession();
-builder.Services.AddScoped<ITI_Raqmiya_MVC.Repository.Repos_Implementation.IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+
+    {
+        options.LoginPath = "/Account/Login";
+        options.AccessDeniedPath = "/Account/AccessDenied";
+        options.ExpireTimeSpan = TimeSpan.FromHours(2);
+    });
 
 
 var app = builder.Build();
