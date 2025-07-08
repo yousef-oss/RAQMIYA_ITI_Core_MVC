@@ -23,6 +23,15 @@ namespace ITI_Raqmiya_MVC.Data
         public DbSet<Category> Categories { get; set; } = null!;
         public DbSet<ProductCategory> ProductCategories { get; set; } = null!;
 
+
+        // NEW DbSets for Tags, Wishlist, and Views
+        public DbSet<Tag> Tags { get; set; } = null!;
+        public DbSet<CategoryTag> CategoryTags { get; set; } = null!;
+        public DbSet<ProductTag> ProductTags { get; set; } = null!;
+        public DbSet<WishlistItem> WishlistItems { get; set; } = null!;
+        public DbSet<ProductView> ProductViews { get; set; } = null!;
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

@@ -88,6 +88,24 @@ namespace ITI_Raqmiya_MVC.Configurations
                 .WithOne(pc => pc.Product) // Each ProductCategory entry is for one Product
                 .HasForeignKey(pc => pc.ProductId) // The foreign key in ProductCategory pointing to Product is ProductId
                 .OnDelete(DeleteBehavior.Cascade); // If a product is deleted, its entries in the join table are deleted
+
+            builder.HasMany(p => p.ProductTags)
+                .WithOne(pt => pt.Product)
+                .HasForeignKey(pt => pt.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(p => p.WishlistItems).WithOne(wi => wi.Product)
+                .HasForeignKey(wi => wi.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(p => p.ProductViews)
+                .WithOne(pv => pv.Product)
+                .HasForeignKey(pv => pv.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
+
+
         }
     }
 }

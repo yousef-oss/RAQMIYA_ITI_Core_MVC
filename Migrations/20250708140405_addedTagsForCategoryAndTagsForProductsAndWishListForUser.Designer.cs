@@ -4,6 +4,7 @@ using ITI_Raqmiya_MVC.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ITI_Raqmiya_MVC.Migrations
 {
     [DbContext(typeof(RaqmiyaContext))]
-    partial class RaqmiyaContextModelSnapshot : ModelSnapshot
+    [Migration("20250708140405_addedTagsForCategoryAndTagsForProductsAndWishListForUser")]
+    partial class addedTagsForCategoryAndTagsForProductsAndWishListForUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

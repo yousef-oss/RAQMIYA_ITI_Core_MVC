@@ -31,6 +31,11 @@ namespace ITI_Raqmiya_MVC.Configurations
                 .HasForeignKey(c => c.ParentCategoryId)
                 .IsRequired(false) // ParentCategoryId is nullable
                 .OnDelete(DeleteBehavior.Restrict); // Prevent deletion of parent category if it has subcategories
+
+            builder.HasMany(c => c.CategoryTags)
+                .WithOne(ct => ct.Category)
+                .HasForeignKey(ct => ct.CategoryId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 

@@ -25,8 +25,17 @@
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
         public ICollection<Subscription> Subscriptions { get; set; } = new List<Subscription>();
 
-        public ICollection<ProductCategory> ProductCategories { get; set; } = new List<ProductCategory>(); 
+        public ICollection<ProductCategory> ProductCategories { get; set; } = new List<ProductCategory>();
 
+
+        //Tags
+        public ICollection<ProductTag> ProductTags { get; set; } = new List<ProductTag>();
+
+        //Wishlist
+        public ICollection<WishlistItem> WishlistItems { get; set; } = new List<WishlistItem>();
+
+        //Views
+        public ICollection<ProductView> ProductViews { get; set; } = new List<ProductView>();
 
     }
 }

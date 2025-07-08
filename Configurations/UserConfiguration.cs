@@ -81,6 +81,17 @@ namespace ITI_Raqmiya_MVC.Configurations
                 .WithOne(p => p.Creator)
                 .HasForeignKey(p => p.CreatorId)
                 .OnDelete(DeleteBehavior.Cascade); // Delete posts if creator is deleted
+
+            builder.HasMany(u => u.WishlistItems)
+                .WithOne(wi => wi.User)
+                .HasForeignKey(wi => wi.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(u => u.ProductViews)
+                .WithOne(pv => pv.User)
+                .HasForeignKey(pv => pv.UserId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }
