@@ -37,5 +37,9 @@ namespace ITI_Raqmiya_MVC.Repository.Repos_Implementation
 
         public void SaveChanges() => _context.SaveChanges();
 
+        public IEnumerable<Product> GetAllFeatured()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
