@@ -36,6 +36,7 @@ namespace ITI_Raqmiya_MVC.Controllers
                 return View(model);
             }
 
+            TempData["WelcomeMessage"] = $"Welcome, {model.Username}! Your account has been created. Please log in.";
             return RedirectToAction("Login");
         }
 
@@ -70,26 +71,19 @@ namespace ITI_Raqmiya_MVC.Controllers
                 new Claim(ClaimTypes.Name, user.Username),
                 new Claim(ClaimTypes.Role, user.IsCreator ? "Creator" : "User"),
                 new Claim("LastLogin", DateTime.UtcNow.ToString("o"))
-
             };
 
-
-
-            //DateTime.Parse(User.FindFirst("LastLogin")?.Value); if you want to access the last login later.
             user.LastLogin = DateTime.UtcNow;
             _db.Users.Update(user);
             await _db.SaveChangesAsync();
 
-
             var identity = new ClaimsIdentity(claims, "Login");
             var principal = new ClaimsPrincipal(identity);
 
-            // add session
             HttpContext.Session.SetString("UserId", user.Id.ToString());
-
-            //await HttpContext.SignInAsync(principal);
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
+            TempData["WelcomeMessage"] = $"Welcome back, {user.Username}!";
             return RedirectToAction("Index", "Home");
         }
 

@@ -46,8 +46,17 @@
                     </ul>
 
                     <div class="d-flex gap-2">
-                        <a href="#signin" class="btn btn-link text-decoration-none text-white">Sign in</a>
-                        <a href="#start-selling" class="btn btn-primary px-4">Start selling</a>
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-link text-decoration-none text-white">Logout</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <a href="/account/login" class="btn btn-link text-decoration-none text-white">Login</a>
+                            <a href="/account/register" class="btn btn-primary px-4">Register</a>
+                        }
                     </div>
                 </div>
             </nav>
@@ -106,9 +115,9 @@
                 </div>
                 <div class="col-md-6 text-md-end">
                     <div class="d-flex gap-4 justify-content-md-end justify-content-start mt-3 mt-md-0">
-                        <a href="#" class="text-light-gray text-decoration-none hover-white small">Privacy Policy</a>
-                        <a href="#" class="text-light-gray text-decoration-none hover-white small">Terms of Service</a>
-                        <a href="#" class="text-light-gray text-decoration-none hover-white small">Cookie Policy</a>
+                        <a href="/Home/Privacy" class="text-light-gray text-decoration-none hover-white small">Privacy Policy</a>
+                        <a href="/Home/Terms" class="text-light-gray text-decoration-none hover-white small">Terms of Service</a>
+                        <a href="/Home/Cookie" class="text-light-gray text-decoration-none hover-white small">Cookie Policy</a>
                     </div>
                 </div>
             </div>
