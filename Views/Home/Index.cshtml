@@ -2,6 +2,13 @@
     ViewData["Title"] = "Sell what you love. Get paid instantly.";
 }
 
+@if (TempData["WelcomeMessage"] != null)
+{
+    <div class="alert alert-success text-center" role="alert">
+        @TempData["WelcomeMessage"]
+    </div>
+}
+
 <!-- Hero Section -->
 <section class="hero-section">
     <div class="container">
