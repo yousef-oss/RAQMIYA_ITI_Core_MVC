@@ -2,22 +2,6 @@
 
 Raqmiya is a modern digital marketplace platform built with ASP.NET Core (.NET 8), supporting both Razor Pages and MVC patterns. It enables creators, artists, and entrepreneurs to sell digital products online with ease, featuring secure authentication, product management, and a user-friendly interface.
 
----
-
-## Table of Contents
-
-- [Features](#features)
-- [Project Structure](#project-structure)
-- [Getting Started](#getting-started)
-- [Configuration](#configuration)
-- [Authentication & Authorization](#authentication--authorization)
-- [Database & Migrations](#database--migrations)
-- [Extending the Project](#extending-the-project)
-- [Contributing](#contributing)
-- [License](#license)
-
----
-
 ## Features
 
 - User registration and login with secure password hashing and session management
@@ -29,7 +13,3 @@ Raqmiya is a modern digital marketplace platform built with ASP.NET Core (.NET 8
 - MVC Controllers and Razor Views for main features
 - Entity Framework Core for data access
 - .NET 8 and C# 12
-
----
-
-## Project Structure
