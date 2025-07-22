@@ -1,0 +1,65 @@
+﻿@model ITI_Raqmiya_MVC.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<style>
+    .login-container {
+        max-width: 400px;
+        margin: 100px auto;
+        padding: 30px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        border-radius: 12px;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+        .login-container h2 {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+    .form-group label {
+        font-weight: 600;
+    }
+
+    .form-links {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.9em;
+    }
+
+        .form-links a {
+            text-decoration: none;
+        }
+</style>
+
+<div class="login-container">
+    <h2>Login</h2>
+
+    <form asp-action="Login" method="post">
+        <div class="form-group mb-3">
+            <label asp-for="Username"></label>
+            <input asp-for="Username" class="form-control" />
+            <span asp-validation-for="Username" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Password"></label>
+            <input asp-for="Password" class="form-control" type="password" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+
+        <div class="form-links mb-3">
+            <a asp-action="Register">Sign up</a>
+            <a href="#">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Login</button>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

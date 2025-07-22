@@ -30,5 +30,9 @@ namespace ITI_Raqmiya_MVC.Models
         public ICollection<Subscription> Subscriptions { get; set; } = new List<Subscription>();
         public ICollection<Post> Posts { get; set; } = new List<Post>();
 
+
+        public ICollection<WishlistItem> WishlistItems { get; set; } = new List<WishlistItem>();
+        public ICollection<ProductView> ProductViews { get; set; } = new List<ProductView>();
+
     }
 }

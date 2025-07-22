@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ITI_Raqmiya_MVC.Repository.Repos_Implementation
 {
-    public interface IAuthRepository
-    {
-        Task<bool> RegisterAsync(string username, string password);
-        Task<bool> LoginAsync(string username, string password);
-    }
+    //public interface IAuthRepository
+    //{
+    //    Task<bool> RegisterAsync(string username, string password);
+    //    Task<bool> LoginAsync(string username, string password);
+    //}
 
     // Repository/AuthRepository.cs
     public class AuthRepository : IAuthRepository
@@ -24,9 +24,9 @@ namespace ITI_Raqmiya_MVC.Repository.Repos_Implementation
             _db = db;
         }
 
-        public async Task<bool> RegisterAsync(string username, string password)
+        public async Task<bool> RegisterAsync(string email, string username, string password, string role)
         {
-            if (await _db.Users.AnyAsync(u => u.Username == username))
+            if (await _db.Users.AnyAsync(u => u.Email == email))
                 return false;
 
             var salt = GenerateSalt();
@@ -34,9 +34,13 @@ namespace ITI_Raqmiya_MVC.Repository.Repos_Implementation
 
             var user = new User
             {
+                Email = email,
                 Username = username,
                 PasswordHash = hash,
-                Salt = salt
+                Salt = salt,
+                IsCreator = role == "Creator", // Assuming role is either "Creator" or something else
+                CreatedAt = DateTime.UtcNow,
+
             };
 
             _db.Users.Add(user);
@@ -61,7 +65,7 @@ namespace ITI_Raqmiya_MVC.Repository.Repos_Implementation
             return Convert.ToBase64String(saltBytes);
         }
 
-        private string HashPassword(string password, string salt)
+        public string HashPassword(string password, string salt)
         {
             using var sha256 = SHA256.Create();
             var combinedBytes = Encoding.UTF8.GetBytes(salt + password);

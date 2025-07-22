@@ -33,22 +33,22 @@ namespace ITI_Raqmiya_MVC.Repository.Repos_Implementation
 
         public User GetByEmail(string email)
         {
-            throw new NotImplementedException();
+            return _context.Users.FirstOrDefault(u => u.Email == email);
         }
 
         public User GetByUsername(string username)
         {
-            throw new NotImplementedException();
+            return _context.Users.FirstOrDefault(u => u.Username == username);
         }
 
         public bool EmailExists(string email)
         {
-            throw new NotImplementedException();
+            return _context.Users.Any(u => u.Email == email);
         }
 
         public bool UsernameExists(string username)
         {
-            throw new NotImplementedException();
+            return _context.Users.Any(u => u.Username == username);
         }
     }
 }

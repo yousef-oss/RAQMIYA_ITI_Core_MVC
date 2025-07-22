@@ -13,6 +13,9 @@
 
         // Navigation property for many-to-many with Product
         public ICollection<ProductCategory> ProductCategories { get; set; } = new List<ProductCategory>();
-    }
 
+
+        // Tags (predefined for this category)
+        public ICollection<CategoryTag> CategoryTags { get; set; } = new List<CategoryTag>();
+    }
 }

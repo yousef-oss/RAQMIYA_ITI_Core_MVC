@@ -1,12 +1,12 @@
 ﻿namespace ITI_Raqmiya_MVC.Models
 {
-    public class ProductCategory
+    public class ProductTag
     {
         public int ProductId { get; set; }
-        public int CategoryId { get; set; }
+        public int TagId { get; set; }
 
+        // Navigation properties
         public Product Product { get; set; } = null!;
-        public Category Category { get; set; } = null!; 
+        public Tag Tag { get; set; } = null!;
     }
-
 }
